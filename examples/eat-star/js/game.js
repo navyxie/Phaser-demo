@@ -3,6 +3,8 @@
 		animation:'popFade'
 	});
 	favicon.badge(0);
+	var score = 0;
+	var scoreText;
 	var game = new Phaser.Game(800,600,Phaser.AUTO,'');
 	var states = {
 		boot:function(){
@@ -33,7 +35,9 @@
 				game.physics.startSystem(Phaser.Physics.ARCADE);
 				this.createPlatform();
 				this.createRole();
-				game.input.onDown.addOnce(this.startGame,this);
+				this.createStar();
+				scoreText = game.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
+				// game.input.onDown.addOnce(this.startGame,this);
 			},
 			this.createPlatform = function(){
 				game.add.sprite(0, 0, 'sky');
@@ -59,12 +63,30 @@
 				player.animations.add('left', [0, 1, 2, 3], 10, true);
 				player.animations.add('right', [5, 6, 7, 8], 10, true);  
 			}
-			this.update = function(){
-				game.physics.arcade.collide(this.player,this.platforms);
+			this.createStar = function(){
+				var stars = game.add.group();
+				this.stars = stars;
+				for(var i = 0; i < 12; i++){
+					var star = stars.create(i * 70, 0, 'star');
+					game.physics.arcade.enable(star);
+					star.body.gravity.y = 6;
+					star.body.bounce.y = 0.7 + Math.random() * 0.2;
+				} 
 			}
-			this.startGame = function(){
+			this.collectStar = function(player, star){
+				star.kill();
+				score += 10; 
+				scoreText.content = 'Score: ' + score; 
+			}
+			this.update = function(){
+				this.updatePlayer();			
+			}
+			this.updatePlayer = function(){
 				var player = this.player;
-				player.body.velocity.x = 0;
+				game.physics.arcade.collide(player,this.platforms);
+				game.physics.arcade.collide(this.stars,this.platforms);
+				game.physics.arcade.overlap(player,this.stars,this.collectStar, null, this); 
+				player.body.velocity.x = 0;	
 				var cursors = game.input.keyboard.createCursorKeys();
 				if(cursors.left.isDown){
 					player.body.velocity.x = -150;
