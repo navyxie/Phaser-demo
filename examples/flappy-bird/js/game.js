@@ -1,4 +1,8 @@
 (function(){
+	var favicon = new Favico({
+		animation:'popFade'
+	});
+	favicon.badge(0);
 	var GAME = new Phaser.Game(320,505,Phaser.AUTO,'game');
 	GAME.States = {};
 	GAME.States.boot = function(){
@@ -144,6 +148,7 @@
 				pipe.hasScored = true;
 				this.scoreText.text = ++this.score;
 				this.soundScore.play();
+				favicon.badge(this.score);
 				return true;
 			}
 			return false;
