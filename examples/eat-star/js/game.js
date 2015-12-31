@@ -4,7 +4,6 @@
 	});
 	favicon.badge(0);
 	var score = 0;
-	var scoreText;
 	var game = new Phaser.Game(800,600,Phaser.AUTO,'');
 	var states = {
 		boot:function(){
@@ -36,7 +35,7 @@
 				this.createPlatform();
 				this.createRole();
 				this.createStar();
-				scoreText = game.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
+				this.scoreText = game.add.text(16, 16, 'Score: 0', { fontSize: '32px', fill: '#000' });
 				// game.input.onDown.addOnce(this.startGame,this);
 			},
 			this.createPlatform = function(){
@@ -57,9 +56,9 @@
 				player.frame = 5;
 				this.player = player;
 				game.physics.arcade.enable(player);
-				player.body.bounce.y = 0.2;
+				player.body.bounce.y = 0.2;//与地面接触时一个轻微的反弹
 				player.body.gravity.y = 300; 
-				player.body.collideWorldBounds = true; 
+				player.body.collideWorldBounds = true; //限定小伙子在当前可视地图内运动
 				player.animations.add('left', [0, 1, 2, 3], 10, true);
 				player.animations.add('right', [5, 6, 7, 8], 10, true);  
 			}
@@ -69,14 +68,14 @@
 				for(var i = 0; i < 12; i++){
 					var star = stars.create(i * 70, 0, 'star');
 					game.physics.arcade.enable(star);
-					star.body.gravity.y = 6;
+					star.body.gravity.y = 10 + Math.random() * 10;
 					star.body.bounce.y = 0.7 + Math.random() * 0.2;
 				} 
 			}
 			this.collectStar = function(player, star){
-				star.kill();
 				score += 10; 
-				scoreText.content = 'Score: ' + score; 
+				this.scoreText.text = 'Score: ' + score;
+				star.kill();				 
 			}
 			this.update = function(){
 				this.updatePlayer();			
@@ -98,8 +97,11 @@
 					player.animations.stop();
 					player.frame = 4;
 				}
-				if(cursors.up.isDown && player.body.touching.down){
+				// && player.body.touching.down //接触地面
+				if(cursors.up.isDown){
 					player.body.velocity.y = -350;
+				}else if(cursors.down.isDown){
+					player.body.velocity.y = 350;
 				}
 			}
 		}
