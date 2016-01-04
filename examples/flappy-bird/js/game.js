@@ -129,6 +129,8 @@
 			this.readyText.destroy();
 			this.playTip.destroy();
 			GAME.input.onDown.add(this.fly, this);
+			this.SPACEBAR_DOWN = GAME.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+			this.SPACEBAR_DOWN.onDown.add(this.fly, this);
 			GAME.time.events.start();
 		}
 		this.fly = function(){
@@ -177,6 +179,7 @@
 			}, this);
 			this.bird.animations.stop('fly', 0);
 			GAME.input.onDown.remove(this.fly,this);
+			this.SPACEBAR_DOWN.onDown.remove(this.fly, this);
 			GAME.time.events.stop(true);
 		}
 		this.showGameOverText = function(){
