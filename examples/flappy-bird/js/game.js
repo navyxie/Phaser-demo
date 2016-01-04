@@ -1,4 +1,8 @@
 (function(){
+	var favicon = new Favico({
+		animation:'popFade'
+	});
+	favicon.badge(0);
 	var GAME = new Phaser.Game(320,505,Phaser.AUTO,'game');
 	GAME.States = {};
 	GAME.States.boot = function(){
@@ -137,6 +141,8 @@
 			this.readyText.destroy();
 			this.playTip.destroy();
 			GAME.input.onDown.add(this.fly, this);
+			this.SPACEBAR_DOWN = GAME.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+			this.SPACEBAR_DOWN.onDown.add(this.fly, this);
 			GAME.time.events.start();
 		}
 		this.fly = function(){
@@ -156,6 +162,7 @@
 				pipe.hasScored = true;
 				this.scoreText.text = ++this.score;
 				this.soundScore.play();
+				favicon.badge(this.score);
 				return true;
 			}
 			return false;
@@ -184,6 +191,7 @@
 			}, this);
 			this.bird.animations.stop('fly', 0);
 			GAME.input.onDown.remove(this.fly,this);
+			this.SPACEBAR_DOWN.onDown.remove(this.fly, this);
 			GAME.time.events.stop(true);
 		}
 		this.showGameOverText = function(){
