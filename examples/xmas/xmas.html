@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<!-- saved from url=(0030)http://www.marlins.co.uk/xmas/ -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+
+<meta name="viewport" content="width=device-width,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link href="http://www.marlins.co.uk/xmas/assets/apple-touch-icon.png" rel="apple-touch-icon">
+<link href="http://www.marlins.co.uk/xmas/assets/apple-touch-icon-76x76.png" rel="apple-touch-icon" sizes="76x76">
+<link href="http://www.marlins.co.uk/xmas/assets/apple-touch-icon-120x120.png" rel="apple-touch-icon" sizes="120x120">
+<link href="http://www.marlins.co.uk/xmas/assets/apple-touch-icon-152x152.png" rel="apple-touch-icon" sizes="152x152">
+
+<script src="./xmas_files/phaser.min.js"></script>
+<script src="./xmas_files/typo.js"></script>
+<script src="./xmas_files/jquery-1.7.2.min.js"></script>
+<script src="./xmas_files/containaword.min.js"></script>
+<link rel="stylesheet" href="./xmas_files/form.css" type="text/css" media="all">  
+
+<script type="text/javascript" src="chrome-extension://aadgmnobpdmgmigaicncghmmoeflnamj/ng-inspector.js"></script><style id="style-1-cropbar-clipper">/* Copyright 2014 Evernote Corporation. All rights reserved. */
+.en-markup-crop-options {
+    top: 18px !important;
+    left: 50% !important;
+    margin-left: -100px !important;
+    width: 200px !important;
+    border: 2px rgba(255,255,255,.38) solid !important;
+    border-radius: 4px !important;
+}
+
+.en-markup-crop-options div div:first-of-type {
+    margin-left: 0px !important;
+}
+</style></head>
+
+<body>
+
+<div id="game" style="overflow: hidden;">
+<div id="loading" style="display: none;">
+<p>Loading...</p>
+<img src="./xmas_files/loader.gif" width="126" height="22" alt="Loading">
+</div>
+     <div id="login">
+        
+        <form class="boxCont" action="" method="POST">
+        
+            <div>
+                <label for="userName">Name</label>
+                <input id="userName" type="text" name="userName" placeholder="Your name (required)" maxlength="16">
+            </div>
+            
+            <div>
+                <label for="email">Email</label>
+                <input id="email" type="text" name="email" placeholder="Your email address (required)" maxlength="30">
+            </div>
+
+            <div>
+                <label for="email">Company</label>
+                <input id="company" type="text" name="company" placeholder="Your company name (optional)" maxlength="16">
+            </div>
+
+            <div id="formfeedback">
+            
+            </div>
+            
+            <div>
+                <input type="button" id="cancelScore" name="cancelScore" value="Cancel" class="btn left" onclick="continueOnClick()">
+                <input type="button" id="submitScore" name="submitScore" value="Submit Score" class="btn right" onclick="sumbitHighScore()">
+            </div>
+        </form>
+    </div>
+<canvas width="480" height="640" id="gamecanvas" style="display: block; touch-action: none; -webkit-user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); cursor: pointer; background-color: rgb(0, 0, 0);"></canvas></div>
+
+<script type="text/javascript">
+
+    function isCanvasSupported(){
+      var elem = document.createElement('canvas');
+      return !!(elem.getContext && elem.getContext('2d'));
+    }
+
+    function show_image(src, width, height, alt) {
+        var img = document.createElement("img");
+        img.src = src;
+        img.width = width;
+        img.height = height;
+        img.alt = alt;
+        document.body.appendChild(img);
+}
+
+if (isCanvasSupported()) {
+    var game = new Phaser.Game(480, 640, Phaser.CANVAS, 'game', { preload: preload, create: create, update: update });
+} else {
+    document.getElementById("loading").style.display="none";
+    show_image('assets/oldbrowser.png', 380, 480, 'Browser not supprted');
+}
+</script>
+
+
+</body></html>
