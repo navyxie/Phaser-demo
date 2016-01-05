@@ -1,7 +1,6 @@
 # Phaser demo
 
-## start examples
-
+### start examples
 http-server examples
 
 ps:open browser , input 'http://localhost:8080'
