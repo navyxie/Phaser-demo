@@ -78,10 +78,14 @@
 				this.scoreText.text = 'Score: ' + score;
 				star.kill();
 				var diamond = game.add.sprite(player.body.x,player.body.y,'diamond');
-				game.add.tween(diamond).to({ y:player.body.y - 30,alpha: 0},100,null,true,0,0,false);
+				var scale = 1;
+				game.add.tween(diamond).to({ y:player.body.y - 30,alpha: 0},100,null,true,0,0,false).onUpdateCallback(function(){
+					scale += 0.01;
+					diamond.scale.setTo(scale);
+				});
 				diamond.animations.add('explode');
 				diamond.animations.play('explode',10,false,false);
-				var diamondTimer = game.time.events.add(Phaser.Timer.SECOND*0.1,function(){
+				var diamondTimer = game.time.events.add(Phaser.Timer.SECOND*0.01,function(){
 					diamond.kill();
 					game.time.events.remove(diamondTimer);
 				},this);							 
