@@ -24,6 +24,7 @@
 				game.load.image('ground','assets/platform.png');
 				game.load.image('star','assets/star.png');
 				game.load.spritesheet('dude','assets/dude.png',32,48,9);
+				game.load.spritesheet('diamond','assets/diamond.png',32,28);
 			}
 			this.create = function(){
 				game.state.start('play');
@@ -75,7 +76,15 @@
 			this.collectStar = function(player, star){
 				score += 10; 
 				this.scoreText.text = 'Score: ' + score;
-				star.kill();				 
+				star.kill();
+				var diamond = game.add.sprite(player.body.x,player.body.y,'diamond');
+				game.add.tween(diamond).to({ y:player.body.y - 30,alpha: 0},100,null,true,0,0,false);
+				diamond.animations.add('explode');
+				diamond.animations.play('explode',10,false,false);
+				var diamondTimer = game.time.events.add(Phaser.Timer.SECOND*0.1,function(){
+					diamond.kill();
+					game.time.events.remove(diamondTimer);
+				},this);							 
 			}
 			this.update = function(){
 				this.updatePlayer();			
