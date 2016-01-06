@@ -18,8 +18,9 @@
 		},
 		tweenDemo:function(){
 			var snow = game.add.sprite(40, 40, 'snow');
+			snow.inputEnabled = true;
 			snow.scale.setTo(0.1,0.1);
-			snow.anchor.setTo(0.5,0.5);
+			snow.anchor.setTo(0.5,0.5);			
 			var raiseG = game.add.tween(snow);
 			var x = game.width/2,y = game.height/2;
 			var easing = [
@@ -72,12 +73,18 @@
 			var easingLen = easing.length;
 			raiseG.to({x:x,y:y}, 500,easing[Math.ceil(Math.random()*easingLen)]);
 			raiseG.onComplete.add(function(){
-				x = parseInt(Math.random()*(game.width) - snow.width);
-				y = parseInt(Math.random()*(game.height - snow.height));
+				x = Math.max(snow.width,parseInt(Math.random()*(game.width)));
+				y =Math.max(snow.height,parseInt(Math.random()*(game.height)));
 				raiseG.to({x:x,y:y}, 500, easing[Math.ceil(Math.random()*easingLen)]);
 				raiseG.start();
 			}, this);
 			raiseG.start();
+			snow.events.onInputDown.add(function(){
+				raiseG.pause();
+			},this);
+			snow.events.onInputUp.add(function(){
+				raiseG.resume();
+			},this);
 		}
 	}
 	game.state.add('boot',boot);
