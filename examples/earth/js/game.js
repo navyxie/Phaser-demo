@@ -21,7 +21,21 @@
 				this.createEarth();				
 				this.createGround();	
 				this.createBaffle();
+				this.bindEvent();
 			};
+			this.bindEvent = function(){
+				this.SPACEBAR_DOWN = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+				this.SPACEBAR_DOWN.onDown.add(this.startGame, this);
+			}
+			this.removeEvent = function(){
+				this.SPACEBAR_DOWN.onDown.remove(this.startGame, this);
+			}
+			this.startGame = function(){
+				if(this.over){
+					this.removeEvent();
+					game.state.start('play');
+				}
+			}
 			this.init = function(){
 				game.physics.startSystem(Phaser.Physics.ARCADE);
 				this.over = false;
@@ -84,19 +98,31 @@
 				var position = this.earth.position;
 				var change = false;
 				if(position.x <= 12){
-					this.velocity.x = Math.abs(this.velocity.x);
+					this.velocity.x = Math.abs(this.velocity.x) + Math.ceil(Math.random()*2);
+					if(Math.ceil(Math.random()*2)%2 === 0){
+						this.velocity.y = -this.velocity.y;
+					}
 					change = true;
 				}
 				if(position.x >= (game.width -12)){
-					this.velocity.x = -Math.abs(this.velocity.x);
+					this.velocity.x = -(Math.abs(this.velocity.x)+Math.ceil(Math.random()*2));
+					if(Math.ceil(Math.random()*2)%2 === 0){
+						this.velocity.y = -this.velocity.y;
+					}	
 					change = true;
 				}
 				if(position.y <= 0){
-					this.velocity.y = Math.abs(this.velocity.y);
+					this.velocity.y = Math.abs(this.velocity.y)+Math.ceil(Math.random()*2);
+					if(Math.ceil(Math.random()*2)%2 === 0){
+						this.velocity.x = -this.velocity.x;
+					}
 					change = true;
 				}
 				if(position.y >= (game.height -22)){
-					this.velocity.y = -Math.abs(this.velocity.y);
+					this.velocity.y = -(Math.abs(this.velocity.y)+Math.ceil(Math.random()*2));
+					if(Math.ceil(Math.random()*2)%2 === 0){
+						this.velocity.x = -this.velocity.x;
+					}
 					change = true;
 				}
 				if(change){
@@ -115,12 +141,12 @@
 					this.scoreText.text = 'score: ' + this.score;
 					if(Math.ceil(Math.random()*2)%2 === 0){
 						this.velocity.x = -this.velocity.x;
-						this.velocity.x -= (10 + Math.ceil(Math.random()*10));
+						this.velocity.x -= (5 + Math.ceil(Math.random()*2));
 					}else{
-						this.velocity.x += (10 + Math.ceil(Math.random()*10));
+						this.velocity.x += (5 + Math.ceil(Math.random()*2));
 					}				
 					this.velocity.y = -this.velocity.y;
-					this.velocity.y -= 10;
+					this.velocity.y -= (5 + Math.ceil(Math.random()*2));
 					this.updateEarth(this.velocity.x,this.velocity.y);
 				}
 			};
