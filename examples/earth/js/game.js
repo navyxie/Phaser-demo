@@ -16,21 +16,34 @@
 				game.stage.backgroundColor = 0x078CFD;
 			};
 			this.create = function(){
+				this.init();
+				this.createScore();
+				this.createEarth();
+				this.createBaffle();
+				this.createGround();	
+			};
+			this.init = function(){
 				this.over = false;
 				this.score = 0;
-				this.scoreText = game.add.text(16, 16, 'Score: 0', { fontSize: '32px', fill: '#000' });
-				game.physics.startSystem(Phaser.Physics.ARCADE);
+			}
+			this.createScore = function(){			
+				this.scoreText = game.add.text(5,5,'score:'+this.score,{fontSize:'22px',fill:'#000'});
+			};
+			this.createEarth = function(){
 				this.earth = game.add.sprite(game.width/2,0,'earth');
 				game.physics.enable(this.earth,Phaser.Physics.ARCADE);
 				this.earth.body.collideWorldBounds = true;
-				//this.earth.scale.setTo(0.08,0.08);
 				this.earth.body.gravity.y = 100;
 				this.earth.anchor.setTo(0.5,0);
+			};
+			this.createGround = function(){
 				this.ground = game.add.sprite(0,game.height,'ground');
 				game.physics.enable(this.ground,Phaser.Physics.ARCADE);
 				this.ground.scale.setTo(1.2,1);
 				this.ground.anchor.setTo(0,1);			
 				this.ground.body.immovable = true;
+			};
+			this.createBaffle = function(){
 				this.baffle = game.add.sprite(game.width/2,game.height - 112,'baffle');
 				game.physics.enable(this.baffle,Phaser.Physics.ARCADE);
 				this.baffle.body.collideWorldBounds = true;
@@ -53,17 +66,17 @@
 				}
 			};
 			this.gameOver = function(){
+				console.log('gameOver');
 				if(this.over){
 					return;
-				}
-				console.log('gameOver');
+				}				
 				this.over = true;
 			};
 			this.updateScore = function(){
 				console.log('updateScore');
 				if(!this.over){
 					this.score++;
-					this.scoreText.text = 'Score: ' + this.score;
+					this.scoreText.text = 'score: ' + this.score;
 				}
 			}
 		}
