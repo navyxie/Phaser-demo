@@ -99,14 +99,14 @@
 				var change = false;
 				if(position.x <= 12){
 					this.velocity.x = Math.abs(this.velocity.x) + Math.ceil(Math.random()*2);
-					if(Math.ceil(Math.random()*2)%2 === 0){
+					if(Math.ceil(Math.random()*2)%2 === 0 && this.velocity.y < 0){
 						this.velocity.y = -this.velocity.y;
 					}
 					change = true;
 				}
 				if(position.x >= (game.width -12)){
 					this.velocity.x = -(Math.abs(this.velocity.x)+Math.ceil(Math.random()*2));
-					if(Math.ceil(Math.random()*2)%2 === 0){
+					if(Math.ceil(Math.random()*2)%2 === 0 && this.velocity.y < 0){
 						this.velocity.y = -this.velocity.y;
 					}	
 					change = true;
@@ -134,6 +134,10 @@
 					return;
 				}				
 				this.over = true;
+				this.showOverText();
+			};
+			this.showOverText = function(){			
+				this.gameOverText = game.add.text(game.width/2,game.height/2,'Game Over!',{fontSize:'22px',fill:'#ff0000'}).anchor.setTo(0.5,0.5);
 			};
 			this.updateScore = function(){
 				if(!this.over){
