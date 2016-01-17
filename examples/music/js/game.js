@@ -22,36 +22,49 @@
 			game.time.events.stop(false);
 			game.input.onDown.addOnce(this.statrGame, this);
 		},
-		getBallInfo:function(){
+		getBallInfo:function(len){
+			len = len || 1;
+			len = Math.min(len,3);
 			var space = 10;
 			var name = 'ball_kill';
+			var result = [];
+			var x;
 			var xs = [
 				0,
 				152.4,
 				304.8
 			];
-			if(Math.random()*space < 7){
-				name = 'ball_ok';
-			}
-			return {
-				x:xs[Math.floor(Math.random()*xs.length)],
-				y:0,
-				name:name
-			};
+			for(var i = 1 ; i <= len ; i++){
+				if(Math.random()*space < 7){
+					name = 'ball_ok';
+				}
+				var cur =  Math.floor(Math.random()*xs.length);
+				x = xs[cur];
+				xs.splice(cur,1);
+				result.push({x:x,y:0,name:name});
+			}		
+			return result;
 		},
 		generateBalls:function(){
-			var ballInfo = this.getBallInfo();
-			var ball = game.add.sprite(ballInfo.x, ballInfo.y, ballInfo.name, 0, this.ballGroup);
-			ball.inputEnabled = true;
-			ball.scale.setTo(0.2,0.2);
-			ball.anchor.setTo(0.1,1.2);
-			if(ballInfo.name === 'ball_ok'){
-				ball.events.onInputDown.add(this.addScore,this);
-			}else{
-				ball.events.onInputDown.add(this.gameOver,this);
-			}
+			this.makeBall();
 			this.ballGroup.setAll('checkWorldBounds',true);
 			this.ballGroup.setAll('body.velocity.y', this.gameSpeed);
+		},
+		makeBall:function(){
+			var ball,ballInfo;
+			var ballInfos = this.getBallInfo(2);
+			for(var i = 0 , len = ballInfos.length ; i < len; i++){
+				ballInfo =  ballInfos[i];
+				ball = game.add.sprite(ballInfo.x, ballInfo.y, ballInfo.name, 0, this.ballGroup);
+				ball.inputEnabled = true;
+				ball.scale.setTo(0.2,0.2);
+				ball.anchor.setTo(0.1,1.2);
+				if(ballInfo.name === 'ball_ok'){
+					ball.events.onInputDown.add(this.addScore,this);
+				}else{
+					ball.events.onInputDown.add(this.gameOver,this);
+				}
+			}	
 		},
 		addScore:function(ball){
 			ball.kill();
