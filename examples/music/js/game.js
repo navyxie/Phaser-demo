@@ -15,6 +15,7 @@
 			game.stage.backgroundColor = 0x078CFD;
 		},
 		create:function(){
+			this.scoreText = game.add.text(5,5,'score:0',{fill:'#fafafa'});
 			this.ballGroup = game.add.group();
 			this.ballGroup.enableBody = true;
 			game.time.events.loop(900, this.generateBalls, this);
@@ -56,6 +57,7 @@
 			ball.kill();
 			this.score += 10;
 			this.gameSpeed += 1;
+			this.scoreText.text = 'score:'+this.score;
 		},
 		statrGame:function(){
 			this.gameSpeed = 100;
@@ -82,6 +84,8 @@
 			}			
 		},
 		gameOver:function(){
+			var gameOverText = game.add.text(200,300,'Game Over,Score:'+this.score,{fill:'#ff0000'});
+			gameOverText.anchor.set(0.5,0.5);
 			game.time.events.loop('stop');
 			this.gameSpeed = 0;
 			this.over = true;
