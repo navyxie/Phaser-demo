@@ -21,6 +21,13 @@
 			game.time.events.loop(900, this.generateBalls, this);
 			game.time.events.stop(false);
 			game.input.onDown.addOnce(this.statrGame, this);
+			this.SPACEBAR_DOWN = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+			this.SPACEBAR_DOWN.onDown.add(this.restart, this);
+		},
+		restart:function(){
+			if(this.over){
+				game.state.start('play');
+			}
 		},
 		getBallInfo:function(len){
 			len = len || 1;
