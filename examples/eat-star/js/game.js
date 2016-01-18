@@ -25,6 +25,7 @@
 				game.load.image('star','assets/star.png');
 				game.load.spritesheet('dude','assets/dude.png',32,48,9);
 				game.load.spritesheet('diamond','assets/diamond.png',32,28);
+				game.load.spritesheet('baddie','assets/baddie.png',32,32,4);
 			}
 			this.create = function(){
 				game.state.start('play');
@@ -36,6 +37,7 @@
 				this.createPlatform();
 				this.createRole();
 				this.createStar();
+				this.initDie();
 				this.scoreText = game.add.text(16, 16, 'Score: 0', { fontSize: '32px', fill: '#000' });
 				// game.input.onDown.addOnce(this.startGame,this);
 			},
@@ -63,20 +65,37 @@
 				player.animations.add('left', [0, 1, 2, 3], 10, true);
 				player.animations.add('right', [5, 6, 7, 8], 10, true);  
 			}
+			this.initDie = function(){
+				this.dies = game.add.group();
+				game.time.events.loop(2000, this.createDie, this);
+			}
+			this.createDie = function(){
+				var die = this.dies.create(Math.random()*(800-32),0,'baddie');
+				die.animations.add('move',[1,0,2,3],8,true);
+				die.animations.play('move');
+				game.physics.arcade.enable(die);
+				die.body.gravity.y = 10 + Math.random() * 20;
+			}
 			this.createStar = function(){
 				var stars = game.add.group();
 				this.stars = stars;
 				for(var i = 0; i < 12; i++){
-					var star = stars.create(i * 70, 0, 'star');
-					game.physics.arcade.enable(star);
-					star.body.gravity.y = 10 + Math.random() * 10;
-					star.body.bounce.y = 0.7 + Math.random() * 0.2;
+					this.addOneStar(i*70,0);
 				} 
+			}
+			this.addOneStar = function(x,y){
+				x = x || Math.random() * (800 - 32);
+				y = y || 0;
+				var star = this.stars.create(x, y, 'star');
+				game.physics.arcade.enable(star);
+				star.body.gravity.y = 10 + Math.random() * 10;
+				star.body.bounce.y = 0.7 + Math.random() * 0.2;
 			}
 			this.collectStar = function(player, star){
 				score += 10; 
 				this.scoreText.text = 'Score: ' + score;
 				star.kill();
+				this.addOneStar();
 				var diamond = game.add.sprite(star.body.x,star.body.y,'diamond');
 				diamond.scale.setTo(0.5,0.5);
 				diamond.anchor.setTo(0.5,0.5);
@@ -89,14 +108,39 @@
 					game.time.events.remove(diamondTimer);
 				},this);							 
 			}
+			this.gameOver = function(){
+				this.over = true;
+				game.time.events.stop(false);
+				game.time.events.loop('stop');
+				this.player.animations.stop();
+				this.player.immovable = true;
+				this.player.body.gravity.y = 0;
+				this.player.body.velocity.x = 0;
+				this.player.body.velocity.y = 0;
+				this.player.body.bounce.y = 0;
+				this.dies.forEach(function(die){
+					die.body.gravity.y = 0;
+					die.body.allowGravity = false;
+				},this);
+				this.stars.forEach(function(star){
+					star.body.gravity.y = 0;
+					star.body.allowGravity = false;
+					star.body.bounce.y = 0;
+				},this);
+				game.add.text(400,300,'Game Over',{fill:'#ff0000'}).anchor.setTo(0.5,0.5);
+			}
 			this.update = function(){
 				this.updatePlayer();			
 			}
 			this.updatePlayer = function(){
+				if(this.over){
+					return;
+				}
 				var player = this.player;
 				game.physics.arcade.collide(player,this.platforms);
 				game.physics.arcade.collide(this.stars,this.platforms);
 				game.physics.arcade.overlap(player,this.stars,this.collectStar, null, this); 
+				game.physics.arcade.overlap(player,this.dies,this.gameOver,null,this);
 				player.body.velocity.x = 0;	
 				var cursors = game.input.keyboard.createCursorKeys();
 				if(cursors.left.isDown){
