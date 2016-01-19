@@ -39,7 +39,13 @@
 				this.createStar();
 				this.initDie();
 				this.scoreText = game.add.text(16, 16, 'Score: 0', { fontSize: '32px', fill: '#000' });
-				// game.input.onDown.addOnce(this.startGame,this);
+				this.SPACEBAR_DOWN = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+				this.SPACEBAR_DOWN.onDown.add(this.restart, this);
+			},
+			this.restart = function(){
+				if(this.over){
+					game.state.start('play');
+				}
 			},
 			this.createPlatform = function(){
 				game.add.sprite(0, 0, 'sky');
@@ -113,19 +119,12 @@
 				game.time.events.stop(false);
 				game.time.events.loop('stop');
 				this.player.animations.stop();
-				this.player.immovable = true;
-				this.player.body.gravity.y = 0;
-				this.player.body.velocity.x = 0;
-				this.player.body.velocity.y = 0;
-				this.player.body.bounce.y = 0;
+				this.player.kill();
 				this.dies.forEach(function(die){
-					die.body.gravity.y = 0;
-					die.body.allowGravity = false;
+					die.kill();
 				},this);
 				this.stars.forEach(function(star){
-					star.body.gravity.y = 0;
-					star.body.allowGravity = false;
-					star.body.bounce.y = 0;
+					star.kill();
 				},this);
 				game.add.text(400,300,'Game Over',{fill:'#ff0000'}).anchor.setTo(0.5,0.5);
 			}
