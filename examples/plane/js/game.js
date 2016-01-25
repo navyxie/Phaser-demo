@@ -17,18 +17,18 @@
 	var aliens;//敌人
 	var bullets;//我方子弹集合
 	var bulletTime = 0;
-	var cursors;
-	var fireButton;
-	var explosions;
+	var cursors;//当前鼠标
+	var fireButton;//点击发射子弹的按钮
+	var explosions;//子弹与飞机或者敌人子弹射中飞机时的动画
 	var starfield;//背景图
 	var score = 0;//分数
 	var scoreString = '';//得分文本
 	var scoreText;//得分文本（phaser对象）
 	var lives;//还有多少条命
-	var enemyBullet;
-	var firingTimer = 0;
-	var stateText;
-	var livingEnemies = [];
+	var enemyBullet;//当前发送子弹的敌机
+	var firingTimer = 0;//当前子弹开火的时间记录
+	var stateText;//游戏是否结束的文本对象
+	var livingEnemies = [];//当前存活的敌人
 
 	function create() {
 
@@ -77,11 +77,11 @@
 	    lives = game.add.group();
 	    game.add.text(game.world.width - 100, 10, 'Lives : ', { font: '34px Arial', fill: '#fff' });
 
-	    //  Text
+	    //  Text 记录游戏状态
 	    stateText = game.add.text(game.world.centerX,game.world.centerY,' ', { font: '84px Arial', fill: '#fff' });
 	    stateText.anchor.setTo(0.5, 0.5);
 	    stateText.visible = false;
-
+	    //创建表示飞机生命剩余条数
 	    for (var i = 0; i < 3; i++) 
 	    {
 	        var ship = lives.create(game.world.width - 100 + (30 * i), 60, 'ship');
@@ -90,17 +90,17 @@
 	        ship.alpha = 0.4;
 	    }
 
-	    //  An explosion pool
+	    //  An explosion pool 子弹打中的动画效果
 	    explosions = game.add.group();
 	    explosions.createMultiple(30, 'kaboom');
-	    explosions.forEach(setupInvader, this);
+	    explosions.forEach(setupInvader, this);//循环让每个爆炸对象拥有爆炸动画
 
 	    //  And some controls to play the game with
 	    cursors = game.input.keyboard.createCursorKeys();
 	    fireButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 	    
 	}
-
+	//创建敌机
 	function createAliens () {
 
 	    for (var y = 0; y < 4; y++)
@@ -114,17 +114,17 @@
 	            alien.body.moves = false;//why?
 	        }
 	    }
-
+	    //敌机群初始位置
 	    aliens.x = 100;
 	    aliens.y = 50;
-
+	    //敌机线性循环动画
 	    //  All this does is basically start the invaders moving. Notice we're moving the Group they belong to, rather than the invaders directly.
 	    var tween = game.add.tween(aliens).to( { x: 200 }, 2000, Phaser.Easing.Linear.None, true, 0, 1000, true);
-
+	    //每次循环动画，敌机群都下降垂直下降10
 	    //  When the tween loops it calls descend
 	    tween.onLoop.add(descend, this);
 	}
-
+	//子弹打中爆炸动画
 	function setupInvader (invader) {
 
 	    invader.anchor.x = 0.5;
@@ -132,7 +132,7 @@
 	    invader.animations.add('kaboom');
 
 	}
-
+	//敌机群每次循环垂直下降10
 	function descend() {
 
 	    aliens.y += 10;
@@ -140,13 +140,13 @@
 	}
 
 	function update() {
-
+		//背景图每帧垂直运动2
 	    //  Scroll the background
 	    starfield.tilePosition.y += 2;
 
 	    if (player.alive)
 	    {
-	        //  Reset the player, then check for movement keys
+	        //  Reset the player, then check for movement keys 重置飞机状态，以便接下来的飞机运行状态判断
 	        player.body.velocity.setTo(0, 0);
 
 	        if (cursors.left.isDown)
@@ -161,12 +161,12 @@
 	        //  Firing?
 	        if (fireButton.isDown)
 	        {
-	            fireBullet();
+	            fireBullet();//飞机开火
 	        }
-
+	        //每200ms敌机开火一次
 	        if (game.time.now > firingTimer)
 	        {
-	            enemyFires();
+	            enemyFires();//敌机开火
 	        }
 
 	        //  Run collision
@@ -196,10 +196,10 @@
 	    scoreText.text = scoreString + score;
 
 	    //  And create an explosion :)
-	    var explosion = explosions.getFirstExists(false);
-	    explosion.reset(alien.body.x, alien.body.y);
-	    explosion.play('kaboom', 30, false, true);
-
+	    var explosion = explosions.getFirstExists(false);//获取第一个活着的敌机
+	    explosion.reset(alien.body.x, alien.body.y);//设置爆炸位置为被打中的敌机位置
+	    explosion.play('kaboom', 30, false, true);//播放爆炸动画
+	    //如果敌机不存在了，表示游戏还没结束
 	    if (aliens.countLiving() == 0)
 	    {
 	        score += 1000;
@@ -218,7 +218,7 @@
 	function enemyHitsPlayer (player,bullet) {
 	    
 	    bullet.kill();
-
+	    //获取标志飞机生命条数的第一个活着的标志
 	    live = lives.getFirstAlive();
 
 	    if (live)
