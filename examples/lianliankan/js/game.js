@@ -20,7 +20,7 @@
 
 	function preload() {
 
-	    game.load.spritesheet("GEMS", "assets/sprites/diamonds32x5.png", GEM_SIZE, GEM_SIZE);
+	    game.load.spritesheet("GEMS", "assets/diamonds32x5.png", GEM_SIZE, GEM_SIZE);
 
 	}
 
