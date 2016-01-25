@@ -230,7 +230,7 @@
 	    var explosion = explosions.getFirstExists(false);
 	    explosion.reset(player.body.x, player.body.y);
 	    explosion.play('kaboom', 30, false, true);
-
+	    //如果飞机的生命条数为0，代表游戏结束了
 	    // When the player dies
 	    if (lives.countLiving() < 1)
 	    {
@@ -251,10 +251,10 @@
 	    //  Grab the first bullet we can from the pool
 	    enemyBullet = enemyBullets.getFirstExists(false);
 
-	    livingEnemies.length=0;
+	    livingEnemies.length=0;//重置当前活着的敌机集合
 
 	    aliens.forEachAlive(function(alien){
-
+	    	//将当前活着的敌机存进livingEnemies数组
 	        // put every living enemy in an array
 	        livingEnemies.push(alien);
 	    });
@@ -262,16 +262,16 @@
 
 	    if (enemyBullet && livingEnemies.length > 0)
 	    {
-	        
+	        //随机取出一个敌机
 	        var random=game.rnd.integerInRange(0,livingEnemies.length-1);
 
 	        // randomly select one of them
 	        var shooter=livingEnemies[random];
 	        // And fire the bullet from this enemy
-	        enemyBullet.reset(shooter.body.x, shooter.body.y);
+	        enemyBullet.reset(shooter.body.x, shooter.body.y);//敌机的子弹位置设置为当前发射子弹的敌机位置
 
-	        game.physics.arcade.moveToObject(enemyBullet,player,120);
-	        firingTimer = game.time.now + 2000;
+	        game.physics.arcade.moveToObject(enemyBullet,player,120);//敌机子弹射击到当前飞机的位置
+	        firingTimer = game.time.now + 2000;//记得更新开火时间，避免短时间内多次开火
 	    }
 
 	}
@@ -287,9 +287,9 @@
 	        if (bullet)
 	        {
 	            //  And fire it
-	            bullet.reset(player.x, player.y + 8);
-	            bullet.body.velocity.y = -400;
-	            bulletTime = game.time.now + 200;
+	            bullet.reset(player.x, player.y + 8);//设置子弹位置为当前飞机的位置
+	            bullet.body.velocity.y = -400;//子弹垂直向上发送
+	            bulletTime = game.time.now + 200;//记得更新开火时间，避免短时间内多次开火
 	        }
 	    }
 
@@ -307,15 +307,15 @@
 	    //  A new level starts
 	    
 	    //resets the life count
-	    lives.callAll('revive');
+	    lives.callAll('revive');//恢复记录飞机生命条数的标志
 	    //  And brings the aliens back from the dead :)
-	    aliens.removeAll();
-	    createAliens();
+	    aliens.removeAll();//删除所有敌机
+	    createAliens();//重新生成敌机
 
 	    //revives the player
-	    player.revive();
+	    player.revive();//复活飞机
 	    //hides the text
-	    stateText.visible = false;
+	    stateText.visible = false;//隐藏显示结果的文本，只有游戏结束时才显示
 
 	}
 })();
